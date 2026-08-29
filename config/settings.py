@@ -13,8 +13,14 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Carrega as variáveis do arquivo .env (se existir) para o ambiente,
+# para que os os.environ.get(...) abaixo enxerguem os valores.
+load_dotenv(BASE_DIR / ".env")
 
 
 # Quick-start development settings - unsuitable for production
@@ -82,6 +88,7 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASSWORD', 'gestao_prazos'),
         'HOST': os.environ.get('DB_HOST', 'localhost'),
         'PORT': os.environ.get('DB_PORT', '5432'),
+        'OPTIONS': {'client_encoding': 'UTF8'},
     }
 }
 
