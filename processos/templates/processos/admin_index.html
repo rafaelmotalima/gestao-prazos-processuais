@@ -1,0 +1,8 @@
+{% extends "admin/index.html" %}
+{% block content %}
+<div style="margin:0 0 20px;padding:14px 18px;background:#eef6ff;border:1px solid #b6d4fe;border-radius:8px;">
+  <a href="{% url 'painel' %}" style="font-size:16px;font-weight:bold;">&#128202; Abrir painel de prazos</a>
+  <span style="color:#555;margin-left:8px;">resumo por urgência e por cliente</span>
+</div>
+{{ block.super }}
+{% endblock %}

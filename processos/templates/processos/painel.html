@@ -1,0 +1,80 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<style>
+  .cards { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:24px; }
+  .card { flex:1 1 140px; border-radius:8px; padding:14px 16px; color:#fff; }
+  .card .n { font-size:30px; font-weight:bold; line-height:1.1; }
+  .card .t { font-size:13px; opacity:.95; }
+  .card.neutro { background:#1f2d3d; }
+  .secao { margin:26px 0 10px; font-size:16px; font-weight:bold; }
+  .barra-linha { display:flex; align-items:center; margin:6px 0; }
+  .barra-rotulo { width:210px; font-size:13px; }
+  .barra-trilho { flex:1; background:#eee; border-radius:4px; height:22px; }
+  .barra { height:22px; border-radius:4px; min-width:2px; }
+  .barra-num { width:40px; text-align:right; font-weight:bold; }
+  .selo { color:#fff; padding:2px 9px; border-radius:10px; font-size:12px; font-weight:bold; }
+  table.painel { width:100%; }
+  .vazio { color:#777; font-style:italic; }
+</style>
+
+<div class="cards">
+  <div class="card neutro"><div class="n">{{ painel.total_pendentes }}</div><div class="t">Prazos pendentes</div></div>
+  {% for item in painel.grafico %}{% if item.nivel != "CUMPRIDO" %}
+  <div class="card" style="background:{{ item.cor }}"><div class="n">{{ item.total }}</div><div class="t">{{ item.rotulo }}</div></div>
+  {% endif %}{% endfor %}
+  <div class="card" style="background:#6b7280"><div class="n">{{ painel.contagem.CUMPRIDO }}</div><div class="t">Cumpridos</div></div>
+</div>
+
+<div class="secao">Prazos por nível de urgência</div>
+{% if painel.total %}
+  {% for item in painel.grafico %}
+  <div class="barra-linha">
+    <div class="barra-rotulo">{{ item.rotulo }}</div>
+    <div class="barra-trilho"><div class="barra" style="width:{{ item.largura }}%;background:{{ item.cor }}"></div></div>
+    <div class="barra-num">{{ item.total }}</div>
+  </div>
+  {% endfor %}
+{% else %}
+  <p class="vazio">Nenhum prazo cadastrado ainda.</p>
+{% endif %}
+
+<div class="secao">Prazos pendentes por cliente</div>
+{% if painel.clientes %}
+<table class="painel">
+  <thead><tr><th>Cliente</th><th>Pendentes</th><th>Vencidos ou urgentes</th><th>Próximo vencimento</th></tr></thead>
+  <tbody>
+  {% for c in painel.clientes %}
+    <tr>
+      <td>{{ c.cliente }}</td>
+      <td>{{ c.pendentes }}</td>
+      <td>{% if c.criticos %}<strong style="color:#c0392b">{{ c.criticos }}</strong>{% else %}0{% endif %}</td>
+      <td>{{ c.proximo|date:"d/m/Y" }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p class="vazio">Nenhum prazo pendente.</p>
+{% endif %}
+
+<div class="secao">Próximos vencimentos</div>
+{% if painel.proximos %}
+<table class="painel">
+  <thead><tr><th>Prazo</th><th>Processo</th><th>Cliente</th><th>Vencimento</th><th>Dias</th><th>Alerta</th></tr></thead>
+  <tbody>
+  {% for x in painel.proximos %}
+    <tr>
+      <td>{{ x.prazo.descricao }}</td>
+      <td>{{ x.prazo.processo.numero_processo }}</td>
+      <td>{{ x.cliente }}</td>
+      <td>{{ x.prazo.data_vencimento|date:"d/m/Y" }}</td>
+      <td>{{ x.dias }}</td>
+      <td><span class="selo" style="background:{{ x.cor }}">{{ x.rotulo }}</span></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p class="vazio">Nenhum prazo pendente.</p>
+{% endif %}
+{% endblock %}

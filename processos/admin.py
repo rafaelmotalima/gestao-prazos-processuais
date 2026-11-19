@@ -3,6 +3,9 @@ from django.utils.html import format_html
 
 from .models import Cliente, Prazo, Processo
 
+# Página inicial do admin com o atalho para o painel de prazos (Prova)
+admin.site.index_template = "processos/admin_index.html"
+
 CORES_ALERTA = {
     "VENCIDO": ("#7f1d1d", "Vencido"),
     "VERMELHO": ("#c0392b", "Urgente"),
